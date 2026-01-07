@@ -1,0 +1,10 @@
+{
+  "placeholderImages": [
+    {
+      "id": "warehouse-banner",
+      "description": "Warehouse with boxes on shelves",
+      "imageUrl": "/warehouse-banner.jpg",
+      "imageHint": "warehouse shelves"
+    }
+  ]
+}
