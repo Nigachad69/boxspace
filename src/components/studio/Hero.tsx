@@ -5,29 +5,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function Hero() {
   return (
-<<<<<<< HEAD
-    <section className="relative h-[120svh] w-full flex items-center justify-center bg-[url('/warehouse-banner.jpg')] bg-cover bg-center">
-      <div
-        style={{ perspective: "2000px" }}
-        className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-16 h-full text-center text-foreground"
-      >
-        <InteractiveCard
-          title="Corporate Services"
-          href="#services"
-          actionText="KNOW MORE"
-          onActionClick={() => {}}
-          glowColor="blue"
-        >
-          <ArrowLeft className="mr-2" />
-        </InteractiveCard>
-        <InteractiveCard
-          title="Individual Services"
-          href="#individual-services"
-          actionText="KNOW MORE"
-          onActionClick={() => {}}
-          glowColor="blue"
-=======
-    <section className="relative h-[80svh] w-full flex items-center justify-center overflow-hidden">
+    <section className="relative h-[112svh] w-full flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <img
           src="https://boxspacesolutions.com/img/banner/warehouse-banner.jpg"
@@ -37,12 +15,12 @@ export default function Hero() {
         />
         <div className="absolute inset-0 bg-black/50" />
       </div>
-      <div 
+      <div
         style={{ perspective: "2000px" }}
         className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-16 h-full text-center text-white"
       >
-        <InteractiveCard 
-          title="Corporate Services" 
+        <InteractiveCard
+          title="Corporate Services"
           href="#services"
           actionText="KNOW MORE"
           onActionClick={() => {}}
@@ -50,13 +28,12 @@ export default function Hero() {
         >
           <ArrowLeft className="mr-2" />
         </InteractiveCard>
-        <InteractiveCard 
-          title="Individual Services" 
+        <InteractiveCard
+          title="Individual Services"
           href="#individual-services"
           actionText="KNOW MORE"
           onActionClick={() => {}}
           glowColor="purple"
->>>>>>> e04a2844829d3fbd0d7abd2e4746a1afb0336bed
         >
           <ArrowRight className="ml-2" />
         </InteractiveCard>

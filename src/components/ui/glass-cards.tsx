@@ -86,9 +86,6 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
             />
 
             {/* Main Card Content */}
-<<<<<<< HEAD
-            <div className="relative w-full h-full flex flex-col justify-center items-center text-center p-8 rounded-3xl bg-card/80 backdrop-blur-xl backdrop-saturate-150 border border-border shadow-lg overflow-hidden">
-=======
             <div style={{
                 position: 'relative',
                 width: '100%',
@@ -101,8 +98,8 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                 padding: '2rem',
                 borderRadius: '24px',
                 background: `
-                    linear-gradient(145deg, 
-                        hsla(var(--card) / 0.6), 
+                    linear-gradient(145deg,
+                        hsla(var(--card) / 0.6),
                         hsla(var(--card) / 0.8)
                     )
                 `,
@@ -111,7 +108,6 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
                 boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3)`,
                 overflow: 'hidden'
             }}>
->>>>>>> e04a2844829d3fbd0d7abd2e4746a1afb0336bed
                 <div style={{
                     position: 'absolute',
                     top: 0,
