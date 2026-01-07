@@ -1,4 +1,8 @@
+<<<<<<< HEAD
   "use client";
+=======
+"use client";
+>>>>>>> e04a2844829d3fbd0d7abd2e4746a1afb0336bed
 
 import * as React from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
@@ -24,7 +28,11 @@ export const InteractiveCard = React.forwardRef<
   HTMLDivElement,
   InteractiveCardProps
 >(
+<<<<<<< HEAD
   ({ title, href, className, children, actionText, onActionClick, glowColor = 'blue' }, ref) => {
+=======
+  ({ title, href, className, children, actionText, onActionClick, glowColor = 'purple' }, ref) => {
+>>>>>>> e04a2844829d3fbd0d7abd2e4746a1afb0336bed
     const cardRef = React.useRef<HTMLDivElement>(null);
 
     // 3D tilt effect logic
@@ -159,9 +167,15 @@ export const InteractiveCard = React.forwardRef<
             }}
             className="absolute inset-px flex flex-col items-center justify-center text-center text-white bg-background/80 rounded-[15px] p-8"
           >
+<<<<<<< HEAD
             <motion.h2
               style={{ transform: "translateZ(50px)" }}
               className="text-4xl font-bold text-primary"
+=======
+            <motion.h2 
+              style={{ transform: "translateZ(50px)" }}
+              className="text-4xl font-bold"
+>>>>>>> e04a2844829d3fbd0d7abd2e4746a1afb0336bed
             >
               {title}
             </motion.h2>

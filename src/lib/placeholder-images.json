@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "placeholderImages": [
     {
       "id": "warehouse-banner",
@@ -8,3 +9,7 @@
     }
   ]
 }
+=======
+  "placeholderImages": []
+}
+>>>>>>> e04a2844829d3fbd0d7abd2e4746a1afb0336bed
