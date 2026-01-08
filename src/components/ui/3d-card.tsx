@@ -148,7 +148,7 @@ export const InteractiveCard = React.forwardRef<
           }}
           data-glow
           className={cn(
-            "relative h-80 w-80 rounded-2xl bg-transparent p-px",
+            "relative h-64 w-64 sm:h-80 sm:w-80 rounded-2xl bg-transparent p-px",
             className
           )}
         >
@@ -170,7 +170,7 @@ export const InteractiveCard = React.forwardRef<
               style={{ transform: "translateZ(60px)" }}
               className="mt-6"
             >
-              <Button asChild variant="secondary" size="lg" onClick={onActionClick}>
+              <Button asChild variant="ghost" size="lg" onClick={onActionClick} className="group">
                 <a href={href} className="flex items-center">
                   {children}
                   {actionText}

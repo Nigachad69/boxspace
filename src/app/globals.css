@@ -81,6 +81,7 @@
   body {
     @apply bg-background text-foreground;
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   .bg-grid {
     background-image:

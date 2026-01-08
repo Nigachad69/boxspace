@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from './button';
 
-const ParallaxCardCarousel = ({ 
+const ParallaxCardCarousel = ({
   cards = [],
   autoplaySpeed = 5000,
   enableAutoplay = true,
@@ -13,26 +13,49 @@ const ParallaxCardCarousel = ({
   perspective = 1200,
   maxRotation = 25,
   backgroundColor = 'bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-700'
+}: {
+  cards: Card[];
+  autoplaySpeed?: number;
+  enableAutoplay?: boolean;
+  cardWidth?: number;
+  cardHeight?: number;
+  gap?: number;
+  perspective?: number;
+  maxRotation?: number;
+  backgroundColor?: string;
 }) => {
+  // Responsive card dimensions
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const responsiveCardWidth = isMobile ? 280 : cardWidth;
+  const responsiveCardHeight = isMobile ? 380 : cardHeight;
+  const responsiveGap = isMobile ? 20 : gap;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(enableAutoplay);
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const carouselRef = useRef(null);
-  const autoplayTimerRef = useRef(null);
+  const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartRef = useRef(0);
   
   // Handle card rotation and parallax on mouse move
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!carouselRef.current) return;
-    
+
     const rect = carouselRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     const x = (e.clientX - centerX) / (rect.width / 2);
     const y = (e.clientY - centerY) / (rect.height / 2);
-    
+
     setMousePosition({ x, y });
   };
   
@@ -61,46 +84,77 @@ const ParallaxCardCarousel = ({
   // Navigation methods
   const goToNext = () => setActiveIndex((prev) => (prev + 1) % cards.length);
   const goToPrev = () => setActiveIndex((prev) => (prev - 1 + cards.length) % cards.length);
-  const goToIndex = (index) => setActiveIndex(index);
-  
+  const goToIndex = (index: number) => setActiveIndex(index);
+
   // Touch handlers
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     touchStartRef.current = e.touches[0].clientX;
   };
-  
-  const handleTouchEnd = (e) => {
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
     const touchEnd = e.changedTouches[0].clientX;
     const diff = touchStartRef.current - touchEnd;
-    
-    if (Math.abs(diff) > 50) {
+
+    // Lower threshold for mobile (30px vs 50px)
+    const threshold = isMobile ? 30 : 50;
+
+    if (Math.abs(diff) > threshold) {
       if (diff > 0) goToNext();
       else goToPrev();
     }
   };
   
   // Calculate card positions
-  const getCardStyle = (index) => {
+  const getCardStyle = (index: number) => {
     const isActive = index === activeIndex;
+
+    if (isMobile) {
+      // On mobile: show only active card, hide others completely
+      if (isActive) {
+        return {
+          x: 0,
+          scale: 1,
+          zIndex: 10,
+          opacity: 1,
+          rotateY: 0,
+          rotateX: 0,
+          translateZ: 0,
+        };
+      } else {
+        // Position inactive cards off-screen
+        return {
+          x: 1000, // Move far off-screen
+          scale: 0.8,
+          zIndex: 1,
+          opacity: 0,
+          rotateY: 0,
+          rotateX: 0,
+          translateZ: 0,
+        };
+      }
+    }
+
+    // Desktop behavior: multiple cards with parallax
     const distance = ((index - activeIndex + cards.length) % cards.length);
     let adjustedDistance = distance;
     if (distance > cards.length / 2) adjustedDistance = distance - cards.length;
-    
-    const x = adjustedDistance * (cardWidth + gap);
+
+    const x = adjustedDistance * (responsiveCardWidth + responsiveGap);
     const scale = isActive ? 1 : 0.85 - Math.min(Math.abs(adjustedDistance), 2) * 0.05;
     const zIndex = cards.length - Math.abs(adjustedDistance);
     const opacity = 1 - Math.min(Math.abs(adjustedDistance) * 0.25, 0.6);
-    
+
     // Apply mouse position effect only to active card
     let rotateY = 0;
     let rotateX = 0;
     let translateZ = 0;
-    
+
     if (isActive && isHovered) {
       rotateY = -mousePosition.x * maxRotation;
       rotateX = mousePosition.y * (maxRotation * 0.5);
       translateZ = 50;
     }
-    
+
     return {
       x,
       scale,
@@ -113,7 +167,7 @@ const ParallaxCardCarousel = ({
   };
 
   // Card layers for parallax effect
-  const renderCardLayers = (card, index) => {
+  const renderCardLayers = (card: Card, index: number) => {
     const isActive = index === activeIndex;
     
     return (
@@ -206,7 +260,7 @@ const ParallaxCardCarousel = ({
 
   return (
     <div className={`flex flex-col items-center justify-center ${backgroundColor}`}>
-      <div 
+      <div
         ref={carouselRef}
         className="relative w-full max-w-6xl mx-auto"
         onMouseMove={handleMouseMove}
@@ -216,9 +270,10 @@ const ParallaxCardCarousel = ({
         onTouchEnd={handleTouchEnd}
         aria-label="Card Carousel"
         role="region"
-        style={{ 
+        style={{
           perspective: `${perspective}px`,
-          height: `${cardHeight + 100}px`
+          height: `${responsiveCardHeight + 100}px`,
+          touchAction: 'pan-y pinch-zoom' // Allow vertical scroll but prevent horizontal scroll conflicts
         }}
       >
         {/* Cards */}

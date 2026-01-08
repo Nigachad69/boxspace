@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative h-[112svh] w-full flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen md:h-[112svh] w-full flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <img
           src="https://boxspacesolutions.com/img/banner/warehouse-banner.jpg"
@@ -17,7 +17,7 @@ export default function Hero() {
       </div>
       <div
         style={{ perspective: "2000px" }}
-        className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-16 h-full text-center text-white"
+        className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 h-full text-center text-white"
       >
         <InteractiveCard
           title="Corporate Services"

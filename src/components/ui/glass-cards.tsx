@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,36 +19,50 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = ({ title, description, index, totalCards, color, icon }) => {
     const cardRef = useRef<HTMLDivElement>(null);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const card = cardRef.current;
-        if (!card) return;
+        if (!card || isMobile) return; // Skip complex animations on mobile
 
-        const targetScale = 1 - (totalCards - index) * 0.05;
+        // Calculate consistent positioning values
+        const baseOffset = 80;
+        const cardSpacing = 60; // Increased spacing for better alignment
+        const targetScale = Math.max(0.85, 1 - index * 0.03); // More subtle scaling, reversed
 
-        // Set initial state
+        // Set initial state with consistent positioning (reversed stacking)
         gsap.set(card, {
             scale: 1,
-            y: index * -25,
-            transformOrigin: "center top"
+            y: (totalCards - 1 - index) * -30, // Reversed vertical offset
+            transformOrigin: "center center", // Changed to center for better alignment
+            opacity: 1,
+            zIndex: index + 1 // Ensure proper stacking order (higher index = higher z-index)
         });
 
-        const startPosition = `top+=${index * 50} top`;
-        const endPosition = `bottom-=${totalCards - index - 1 * 50} top`;
+        // Create more predictable scroll trigger zones (reversed)
+        const triggerOffset = (totalCards - 1 - index) * cardSpacing;
+        const startPosition = `top+=${baseOffset + triggerOffset} center`;
+        const endPosition = `bottom-=${index * cardSpacing} center`;
 
         ScrollTrigger.create({
             trigger: card,
             start: startPosition,
             end: endPosition,
-            scrub: true,
-            onUpdate: (self) => {
+            scrub: 1.2, // Slightly smoother scrubbing
+            onUpdate: (self: any) => {
                 const progress = self.progress;
-                const scale = gsap.utils.interpolate(1, targetScale, progress);
+                // Use smooth easing function
+                const easeProgress = gsap.utils.interpolate(0, 1, progress);
+
+                const scale = gsap.utils.interpolate(1, targetScale, easeProgress);
+                const yOffset = easeProgress * (totalCards - index - 1) * -30;
+
                 gsap.to(card, {
                     scale: scale,
-                    y: (self.progress * (totalCards - index - 1) * -25),
-                    duration: 0.1,
-                    ease: "none"
+                    y: yOffset,
+                    duration: 0.05, // Reduced duration for smoother updates
+                    ease: "power2.out",
+                    overwrite: "auto" // Prevent animation conflicts
                 });
             }
         });
@@ -55,21 +70,22 @@ const Card: React.FC<CardProps> = ({ title, description, index, totalCards, colo
         return () => {
             ScrollTrigger.getAll().forEach(trigger => trigger.kill());
         };
-    }, [index, totalCards]);
+    }, [index, totalCards, isMobile]);
 
     return (
         <div
             ref={cardRef}
             style={{
-                position: 'sticky',
-                top: `${80 + index * 50}px`,
+                position: isMobile ? 'relative' : 'sticky',
+                top: isMobile ? 'auto' : `${80 + index * 60}px`, // Use consistent spacing
                 width: '90%',
                 maxWidth: '800px',
                 height: '350px',
                 isolation: 'isolate',
-                transformOrigin: 'top center',
+                transformOrigin: 'center center', // Match the GSAP transform origin
                 willChange: 'transform',
-                margin: '0 auto'
+                margin: isMobile ? '0 auto 2rem auto' : '0 auto', // Remove top margin, rely on section padding
+                zIndex: isMobile ? 'auto' : index + 1 // Remove z-index stacking on mobile
             }}
             className="card-content"
         >
@@ -147,10 +163,17 @@ interface StackedCardsProps {
 
 export const StackedCards: React.FC<StackedCardsProps> = ({ cards }) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
+
+        // Skip complex scroll animations on mobile
+        if (isMobile) {
+            gsap.set(container, { opacity: 1 });
+            return;
+        }
 
         gsap.fromTo(container,
             { opacity: 0 },
@@ -165,10 +188,17 @@ export const StackedCards: React.FC<StackedCardsProps> = ({ cards }) => {
                 }
             }
         );
-    }, []);
+    }, [isMobile]);
 
     return (
-        <section ref={containerRef} className="relative w-full text-foreground pb-[50vh]">
+        <section
+            ref={containerRef}
+            className="relative w-full text-foreground"
+            style={{
+                paddingBottom: isMobile ? '2rem' : '50vh',
+                paddingTop: isMobile ? '3rem' : '0' // Add top padding on mobile to separate from title
+            }}
+        >
             {cards.map((card, index) => (
                 <Card
                     key={card.id}

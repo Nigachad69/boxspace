@@ -1,14 +1,23 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Home, Phone, Info, Mail } from 'lucide-react';
+import { Home, Phone, Info, Mail, Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetOverlay,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 const BoxspaceLogo = () => (
   <svg
-    className="h-8 w-8 text-primary"
+    className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-primary"
     viewBox="0 0 100 100"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -59,6 +68,7 @@ const BoxspaceLogo = () => (
 
 export default function Header() {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { href: '/', label: 'HOME', icon: Home, isHome: true },
@@ -70,13 +80,13 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b">
-      <div className="container mx-auto px-4 h-24 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-3">
+      <div className="w-screen px-2 sm:px-4 md:px-8 h-16 sm:h-20 md:h-24 flex items-center justify-between">
+        <div className="flex items-center gap-1 sm:gap-2 md:gap-4 flex-shrink">
+          <Link href="/" className="flex items-center gap-1 sm:gap-2 md:gap-3 flex-shrink-0">
             <BoxspaceLogo />
-            <div>
-              <span className="font-headline text-2xl font-bold">Boxspace</span>
-              <p className="text-xs text-muted-foreground tracking-wider">
+            <div className="min-w-0 flex-shrink">
+              <span className="font-headline text-base sm:text-lg md:text-xl lg:text-2xl font-bold truncate">Boxspace</span>
+              <p className="text-xs text-muted-foreground tracking-wider hidden sm:block">
                 An ISO 9001:2015 CERTIFIED COMPANY
               </p>
             </div>
@@ -106,6 +116,41 @@ export default function Header() {
                 <p className="font-bold text-base text-accent">+91 8591-439-244</p>
              </div>
           </div>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent side="left" className="w-[85vw] max-w-sm">
+              <SheetHeader>
+                <SheetTitle className="text-left"></SheetTitle>
+              </SheetHeader>
+
+              <nav className="flex flex-col gap-4 mt-6">
+                {navLinks.map(({ href, label, icon: Icon, isHome }) => (
+                  <Button
+                    variant="ghost"
+                    asChild
+                    key={label}
+                    className="justify-start h-12"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Link
+                      href={href}
+                      className={cn('flex items-center gap-3 text-base', {
+                        'text-primary': pathname === href || (isHome && pathname === '/'),
+                      })}
+                    >
+                      {Icon && <Icon className="h-5 w-5" />}
+                      {label}
+                    </Link>
+                  </Button>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

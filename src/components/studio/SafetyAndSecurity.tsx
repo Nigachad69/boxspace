@@ -13,7 +13,7 @@ export default function SafetyAndSecurity() {
     <section id="safety" className="bg-background text-foreground">
        <div
         ref={titleRef}
-        className={`text-center pt-16 transition-opacity duration-1000 ${
+        className={`text-center pt-16 pb-8 md:pb-16 transition-opacity duration-1000 ${
           isTitleInView ? 'opacity-100' : 'opacity-0'
         }`}
       >
